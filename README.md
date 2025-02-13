@@ -153,8 +153,8 @@ docker-compose up --build
 ## **Usage**  
 ✅ **User Signup/Login** → via `/auth/signup`, `/auth/login`
 ✅ **CRUD operations on posts** → via `/post/create`
-✅ **RBAC-based authorization** → Admins can **delete** posts, users **cannot**
-✅ **Real-time notifications** → WebSockets for **post interactions**
+✅ **RBAC-based authorization** → SUPER Admin /Admins  **delete** posts, users data users **cannot** delete another users data and so many validations at different levels to manage rights.
+✅ **Real-time notifications** → WebSockets for **post interactions** -> Have to be implemented in future
 
 ---
 
