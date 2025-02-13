@@ -17,6 +17,7 @@
     "@apollo/gateway": "^2.9.3",
     "@apollo/server": "^4.11.3",
     "@as-integrations/fastify": "^2.1.1",
+    "@fastify/rate-limit": "^10.2.2",
     "@graphql-tools/schema": "^10.0.16",
     "@nestjs/apollo": "^13.0.2",
     "@nestjs/common": "^11.0.6",
