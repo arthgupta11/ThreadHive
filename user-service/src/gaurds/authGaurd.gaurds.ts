@@ -21,7 +21,6 @@ export class AuthGuard implements CanActivate {
 
     const request: AuthGaurdContextDto = context.getArgs()[2];
 
-    console.log(request.req);
     const token = request.req.raw?.headers.authorization;
     const { fieldName } = context.getArgs()[3];
     // Check if the token is provided
@@ -62,7 +61,7 @@ export class AuthGuard implements CanActivate {
           return channelId;
         });
       };
-      console.log(request.role);
+
       // write logic to extract list of channels he have accessed to admin
       if (role === 'ADMIN') {
         const channelsAccess = await db

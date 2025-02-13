@@ -41,8 +41,8 @@ export class UserChannelDao {
 
       // Return the first inserted user
     } catch (error) {
-      console.log(error);
-      throw new Error('Database error !');
+
+      throw new Error(`Database error - ${error}`);
     }
   }
 
@@ -60,8 +60,8 @@ export class UserChannelDao {
       );
       return response;
     } catch (error) {
-      console.log('error-->', error);
-      throw new Error('Database error !');
+
+      throw new Error(`Database error -> ${error} `);
     }
   }
 
@@ -74,7 +74,6 @@ export class UserChannelDao {
       const response = await db
         .delete(usersChannelMapping)
         .where(eq(usersChannelMapping.id, id));
-      console.log(response);
 
       if (response[0].affectedRows !== 0) {
         await this.userActivityDao.addUserActivity(

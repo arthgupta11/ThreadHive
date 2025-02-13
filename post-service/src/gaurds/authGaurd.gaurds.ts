@@ -67,7 +67,7 @@ export class AuthGuard implements CanActivate {
         .from(usersChannelMapping)
         .where(eq(usersChannelMapping.userId, id));
       request.channelsAllowed = getChannelIds(channelsAccess);
-      console.log(channelsAccess);
+
       // console.log("context req",context.a)
       return true; // Allow access if the user is found and roles match
     } catch (error) {

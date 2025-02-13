@@ -60,7 +60,7 @@ export class LikesDao {
         return `${inputObject.type} of id -> ${inputObject.typeId} unliked`;
       }
         const likedStatus = await db.insert(likes).values(inputObject);
-        console.log(likedStatus);
+
         await this.userActivityDao.addUserActivity('liked', context.userId, {
           type: input.type,
           createdAt: new Date(),
@@ -69,11 +69,10 @@ export class LikesDao {
           channelId: input.channelId.toString(),
           postId: input.postId.toString(),
         });
-        return `liked ${inputObject.type}`;
+        return `liked ${inputObject.type} , other details-> ${likedStatus}`;
 
     } catch (error) {
-      console.log(error);
-      throw new Error('Database error !');
+      throw new Error(`Database error -> ${error}`);
     }
   }
 
@@ -83,8 +82,7 @@ export class LikesDao {
 
       return response;
     } catch (error) {
-      console.log('error-->', error);
-      throw new Error('Database error !');
+      throw new Error(`Database error -> ${error}`);
     }
   }
 }

@@ -31,13 +31,13 @@ import { GraphQLModule } from '@nestjs/graphql';
                url: 'http://127.0.0.1:3000/graphql',
               // url: 'http://user-service:3000/graphql',
             }
-            
+
           ],
         }),
         buildService: ({ url }) => {
           return new RemoteGraphQLDataSource({
             url,
-            willSendRequest({ request, context }) {
+            willSendRequest ({ request, context }) {
               // Forward the Authorization header to the subgraphs
               if (context.req && context.req.headers) {
                 request.http?.headers.set('Authorization', context.req.headers.authorization);

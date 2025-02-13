@@ -9,49 +9,49 @@ import { UpdateChannelInput } from './dtos/updateChannelInput.dto';
 
 @Injectable()
 export class ChannelsService {
-  constructor(private readonly channelDao: ChannelDao) {} // Inject `ChannelDao`
+  constructor (private readonly channelDao: ChannelDao) {} // Inject `ChannelDao`
 
-  unauthorisedAccessMessage: string =
+  unauthorisedAccessMessage =
     'You are not allowed only super admin can access';
-  async createChannel(input: CreateChannelInput, context: AuthGaurdContextDto) {
+  async createChannel (input: CreateChannelInput, context: AuthGaurdContextDto) {
     if (context.role === 'SUPERADMIN') {
       return this.channelDao.createChannelDao(input, context);
-    } else {
-      throw new UnauthorizedException(this.unauthorisedAccessMessage);
     }
+      throw new UnauthorizedException(this.unauthorisedAccessMessage);
+
   }
 
-  async getChannel(
+  async getChannel (
     context: AuthGaurdContextDto
   ): Promise<ChannelResponseDto[]> {
     if (context.role === 'ADMIN' || context.role === 'SUPERADMIN') {
       return this.channelDao.getChannelsDao(context);
-    } else {
+    }
       throw new UnauthorizedException(
         'You are not allowed only super admin or admin can access'
       );
-    }
+
   }
 
-  async deleteChannel(
+  async deleteChannel (
     input: DeleteChannelInput,
     context: AuthGaurdContextDto
   ): Promise<string> {
     if (context.role === 'SUPERADMIN') {
       return this.channelDao.deleteChannelDao(input, context);
-    } else {
-      throw new UnauthorizedException(this.unauthorisedAccessMessage);
     }
+      throw new UnauthorizedException(this.unauthorisedAccessMessage);
+
   }
 
-  async updateChannel(
+  async updateChannel (
     input: UpdateChannelInput,
     context: AuthGaurdContextDto
   ): Promise<string> {
     if (context.role === 'SUPERADMIN') {
       return this.channelDao.updateChannel(input, context);
-    } else {
-      throw new UnauthorizedException(this.unauthorisedAccessMessage);
     }
+      throw new UnauthorizedException(this.unauthorisedAccessMessage);
+
   }
 }

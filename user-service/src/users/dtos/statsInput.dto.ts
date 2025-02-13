@@ -4,10 +4,10 @@ import { BigIntScalar } from 'database-service-arth/dist';
 @InputType()
 export class StatsUserInput {
   @Field({ nullable: true })
-  startDate?: Date;
+  startDate?: Date ;
 
   @Field({ nullable: true })
-  endDate?: Date;
+  endDate?: Date ;
 
   @Field(
     () => {

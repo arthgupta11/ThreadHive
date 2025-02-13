@@ -11,7 +11,7 @@ import { UpdateCommentInput } from './dtos/updateComment.dto';
 export class CommentDao {
   constructor (private readonly userActivityDao: UserActivityDao) {}
   async createCommentDao (input: typeof comments.$inferInsert,context: AuthGaurdContextDto) {
-    console.log('in create block');
+
     try {
       const newComment = await db.insert(comments).values(input); // .returning() returns inserted row(s)
       if (newComment[0].affectedRows !== 0) {
@@ -24,7 +24,7 @@ export class CommentDao {
             postId: input.postId.toString(),
             modifiedBy: input.modifiedBy.toString(),
             channelId: input.channelId.toString(),
-            
+
           }
         );
         return 'ok done with status 200';
@@ -33,8 +33,7 @@ export class CommentDao {
 
       // Return the first inserted Comment
     } catch (error) {
-      console.log(error);
-      throw new Error('Database error !');
+      throw new Error(`Database error -> ${error}`);
     }
   }
 
@@ -49,8 +48,8 @@ export class CommentDao {
         );
       return response;
     } catch (error) {
-      console.log('error-->', error);
-      throw new Error('Database error !');
+
+      throw new Error(`Database error -> ${error}`);
     }
   }
 
@@ -58,7 +57,6 @@ export class CommentDao {
     try {
       const { id } = input;
       const response = await db.delete(comments).where(eq(comments.id, id));
-      console.log(response);
 
       if (response[0].affectedRows !== 0) {
         await this.userActivityDao.addUserActivity(

@@ -56,8 +56,7 @@ export class AuthDao {
         throw new Error('Invalid credentials');
       }
       const response = await this.login(user);
-      console.log(response);
-      console.log(context);
+
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         user.id,
@@ -66,8 +65,8 @@ export class AuthDao {
 
       return response;
     } catch (error) {
-      console.log('error->', error);
-      throw new Error('Loginn failed !');
+
+      throw new Error(`Loginn failed -> ${error}`);
     }
   }
 }

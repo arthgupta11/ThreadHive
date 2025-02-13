@@ -13,6 +13,7 @@ import { UserChannelService } from './userChannel.service';
 export class UserChannelResolver {
   constructor (private readonly userChannelService: UserChannelService) {}
 
+  unAuthorizedMessage = 'You dont have access to this request with role of user';
   @Query(() => {
     return [UserChannelResponseDto];
   })
@@ -20,14 +21,13 @@ export class UserChannelResolver {
   async getUserChannelMapping (
     @Context() context: AuthGaurdContextDto
   ): Promise<UserChannelResponseDto[]> {
-    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN'){
+    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN') {
       return this.userChannelService.getUserChannelMapping(context);
-    }else {
-      throw new UnauthorizedException(
-        'You dont have access to this request with role of user}'
-      );
     }
-    
+      throw new UnauthorizedException(
+        this.unAuthorizedMessage
+      );
+
   }
 
   @Mutation(() => {
@@ -38,14 +38,13 @@ export class UserChannelResolver {
     @Args('input') input: CreateUserChannelInput,
     @Context() context: AuthGaurdContextDto
   ): Promise<string> {
-    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN'){
+    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN') {
       return this.userChannelService.createUserChannelMapping(input, context);
-    }else {
-      throw new UnauthorizedException(
-        'You dont have access to this request with role of user}'
-      );
     }
-    
+      throw new UnauthorizedException(
+        this.unAuthorizedMessage
+      );
+
   }
 
   @Mutation(() => {
@@ -56,14 +55,13 @@ export class UserChannelResolver {
     @Args('input') input: DeleteUserChannelInput,
     @Context() context: AuthGaurdContextDto
   ): Promise<string> {
-    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN'){
+    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN') {
       return this.userChannelService.deleteUserChannelMapping(input, context); // You can access `input.id` directly
-    }else {
-      throw new UnauthorizedException(
-        'You dont have access to this request with role of user}'
-      );
     }
-    
+      throw new UnauthorizedException(
+        this.unAuthorizedMessage
+      );
+
   }
 
   @Mutation(() => {
@@ -74,13 +72,12 @@ export class UserChannelResolver {
     @Args('input') input: UpdateUserChannelInput,
     @Context() context: AuthGaurdContextDto
   ): Promise<string> {
-    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN'){
+    if (context.role === 'ADMIN' || context.role === 'SUPERADMIN') {
       return this.userChannelService.updateUserChannelMapping(input, context); // You can access `input.id` directly
-    }else {
-      throw new UnauthorizedException(
-        'You dont have access to this request with role of user}'
-      );
     }
-    
+      throw new UnauthorizedException(
+        this.unAuthorizedMessage
+      );
+
   }
 }

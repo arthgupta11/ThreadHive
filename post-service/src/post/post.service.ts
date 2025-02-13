@@ -1,4 +1,6 @@
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 
 import { AuthGaurdContextDto } from '../gaurds/authGuardContext.dto';
 import { CreatePostInput } from './dtos/createPostInput.dto';
@@ -6,8 +8,6 @@ import { DeletePostInput } from './dtos/deletePostInput.dto';
 import { PostResponseDto } from './dtos/postResponse.dto';
 import { UpdatePostInput } from './dtos/updatePostInput.dto';
 import { PostDao } from './post.dao';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 
 @Injectable()
 export class PostsService {
@@ -38,21 +38,21 @@ export class PostsService {
        console.log('Returning cached posts...');
        return cachedPosts;
      }
-     
+
      // Get posts from database
      const posts = await this.postDao.getPostsDao(context);
-     
+
      // ✅ Convert `bigint` fields to `string` before caching
-     const serializedPosts = posts.map(post => ({
+     const serializedPosts = posts.map((post) => {return {
        ...post,
        id: post.id.toString(), // Convert `bigint` fields to `string`
        createdBy: post.createdBy.toString(),
        modifiedBy: post.modifiedBy.toString(),
        channelId: post.channelId.toString(),
-     }));
-     
+     };});
+
      await this.cacheManager.set(cacheKey, serializedPosts, 60 * 5); // 5 min cache
-     
+
      return posts;
   }
 

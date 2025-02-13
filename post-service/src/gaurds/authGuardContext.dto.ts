@@ -1,8 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BigIntScalar, USERROLE } from 'database-service-arth/dist';
 
-
-
 @ObjectType()
 export class AuthGaurdContextDto {
   @Field(() => {

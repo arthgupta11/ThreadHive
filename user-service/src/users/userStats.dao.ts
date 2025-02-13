@@ -8,7 +8,7 @@ import {
   UserActivityDao,
   users,
 } from 'database-service-arth/dist';
-import { and, asc, count, desc, eq, gte, lte,SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, lte, SQL } from 'drizzle-orm';
 
 import { AuthGaurdContextDto } from '../gaurds/authGuardContext.dto';
 import { StatsUserInput } from './dtos/statsInput.dto';
@@ -17,32 +17,22 @@ import { StatsResponseDto } from './dtos/statsResponse.dto';
 @Injectable()
 export class userStatsDao {
   constructor (private readonly userActivityDao: UserActivityDao) {}
+
   async getUserPostStats (input: StatsUserInput, context: AuthGaurdContextDto) {
     const { startDate, endDate, userId } = input;
-    console.log(startDate, endDate, userId)
+
     const conditions: SQL[] = [];
 
-    if (startDate) {
-      conditions.push(gte(posts.createdAt, startDate));
-    }
-    if (endDate) {
-      conditions.push(lte(posts.createdAt, endDate));
-    }
-    if (userId) {
-      conditions.push(eq(posts.createdBy, userId));
-    }
+    if (startDate) {conditions.push(gte(posts.createdAt, startDate));}
+    if (endDate) {conditions.push(lte(posts.createdAt, endDate));}
 
-    // Get users list based on userId condition
+    // Get all userIds if no specific user is provided
     const userIds = userId
       ? [userId]
       : await db
           .select({ id: users.id })
           .from(users)
-          .then((response) => {
-            return response.map((u) => {
-              return u.id;
-            });
-          });
+          .then((response) => {return response.map((u) => {return u.id;});});
 
     const result = await Promise.all(
       userIds.map(async (uid) => {
@@ -65,64 +55,24 @@ export class userStatsDao {
           .orderBy(asc(count(likes.id)))
           .limit(1);
 
-        // Get total comments by user
-        const totalComments = await db
-          .select({ count: count() })
-          .from(comments)
-          .where(and(...conditions, eq(comments.createdBy, uid)))
-          .then((response) => {
-            return response[0]?.count || 0;
-          });
+        // Get total comments (without filtering by posts.createdAt)
+        const totalComments = await db.$count(comments, and(eq(comments.createdBy, uid)));
 
-        // Get total replies by user
-        const totalReplies = await db
-          .select({ count: count() })
-          .from(replies)
-          .where(and(...conditions, eq(replies.createdBy, uid)))
-          .then((response) => {
-            return response[0]?.count || 0;
-          });
+        const totalReplies = await db.$count(replies, and(eq(replies.createdBy, uid)));
 
-        // Get total likes on posts, comments, and replies by user
-        const totalLikesOnPosts = await db
-          .select({ count: count() })
-          .from(likes)
-          .where(
-            and(...conditions, eq(likes.likedBy, uid), eq(likes.type, 'POST'))
-          )
-          .then((response) => {
-            return response[0]?.count || 0;
-          });
+        // Get total likes (without filtering by posts.createdAt)
+        const totalLikesOnPosts = await db.$count(likes,and(eq(likes.likedBy, uid), eq(likes.type, 'POST')));
 
-        const totalLikesOnComments = await db
-          .select({ count: count() })
-          .from(likes)
-          .where(
-            and(
-              ...conditions,
-              eq(likes.likedBy, uid),
-              eq(likes.type, 'COMMENT')
-            )
-          )
-          .then((response) => {
-            return response[0]?.count || 0;
-          });
+        const totalLikesOnComments = await db.$count(likes, and(eq(likes.likedBy, uid), eq(likes.type, 'COMMENT')));
 
-        const totalLikesOnReplies = await db
-          .select({ count: count() })
-          .from(likes)
-          .where(
-            and(...conditions, eq(likes.likedBy, uid), eq(likes.type, 'REPLY'))
-          )
-          .then((response) => {
-            return response[0]?.count || 0;
-          });
+        const totalLikesOnReplies = await db.$count(likes,and(eq(likes.likedBy, uid), eq(likes.type, 'REPLY')));
 
         this.userActivityDao.addUserActivity(
           context.activityDone,
           context.userId,
           { request: 'success' }
         );
+
         return {
           id: uid,
           postWithMaxLikes: postWithMaxLikes.post || undefined,

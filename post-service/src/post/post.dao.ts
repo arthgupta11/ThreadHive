@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { db, posts, UserActivityDao } from 'database-service-arth/dist';
 import { eq } from 'drizzle-orm';
+
 import { AuthGaurdContextDto } from '../gaurds/authGuardContext.dto';
 import { DeletePostInput } from './dtos/deletePostInput.dto';
 import { PostResponseDto } from './dtos/postResponse.dto';
@@ -8,8 +9,8 @@ import { UpdatePostInput } from './dtos/updatePostInput.dto';
 
 @Injectable()
 export class PostDao {
-  constructor(private readonly userActivityDao: UserActivityDao) {}
-  async createPostDao(
+  constructor (private readonly userActivityDao: UserActivityDao) {}
+  async createPostDao (
     input: typeof posts.$inferInsert,
     context: AuthGaurdContextDto
   ) {
@@ -34,12 +35,12 @@ export class PostDao {
 
       // Return the first inserted post
     } catch (error) {
-      console.log(error);
-      throw new Error('Database error !');
+
+      throw new Error(`Database error -> ${error}`);
     }
   }
 
-  async getPostsDao(context: AuthGaurdContextDto): Promise<PostResponseDto[]> {
+  async getPostsDao (context: AuthGaurdContextDto): Promise<PostResponseDto[]> {
     try {
       const response = await db.select().from(posts);
       await this.userActivityDao.addUserActivity(
@@ -49,19 +50,17 @@ export class PostDao {
       );
       return response as PostResponseDto[];
     } catch (error) {
-      console.log('error-->', error);
-      throw new Error('Database error !');
+      throw new Error(`Database error -> ${error}`);
     }
   }
 
-  async deletePostDao(
+  async deletePostDao (
     input: DeletePostInput,
     context: AuthGaurdContextDto
   ): Promise<string> {
     try {
       const { id } = input;
       const response = await db.delete(posts).where(eq(posts.id, id));
-      console.log(response);
 
       if (response[0].affectedRows !== 0) {
         await this.userActivityDao.addUserActivity(
@@ -77,7 +76,7 @@ export class PostDao {
     }
   }
 
-  async canUserProceed(
+  async canUserProceed (
     entityId: bigint,
     channelsAllowed: bigint[],
     userId: bigint,
@@ -100,7 +99,7 @@ export class PostDao {
     return false;
   }
 
-  async updatePost(
+  async updatePost (
     input: UpdatePostInput,
     context: AuthGaurdContextDto
   ): Promise<string> {

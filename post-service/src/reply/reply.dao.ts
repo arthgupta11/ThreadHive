@@ -15,7 +15,7 @@ export class ReplyDao {
     input: typeof replies.$inferInsert,
     context: AuthGaurdContextDto
   ) {
-    console.log('in create block');
+
     try {
       const newReply = await db.insert(replies).values(input); // .returning() returns inserted row(s)
       if (newReply[0].affectedRows !== 0) {
@@ -37,8 +37,7 @@ export class ReplyDao {
 
       // Return the first inserted Reply
     } catch (error) {
-      console.log(error);
-      throw new Error('Database error !');
+      throw new Error(`Database error -> ${error}`);
     }
   }
 
@@ -54,8 +53,7 @@ export class ReplyDao {
       );
       return response;
     } catch (error) {
-      console.log('error-->', error);
-      throw new Error('Database error !');
+      throw new Error(`Database error -> ${error}`);
     }
   }
 
@@ -67,7 +65,6 @@ export class ReplyDao {
       const { id } = input;
       const response = await db.delete(replies).where(eq(replies.id, id));
 
-      console.log(response);
       if (response[0].affectedRows !== 0) {
         await this.userActivityDao.addUserActivity(
           context.activityDone,
@@ -126,7 +123,7 @@ export class ReplyDao {
       }
       throw new Error(`Reply of id ${id} not updated`);
     } catch (error) {
-      throw new Error('database error : {error}');
+      throw new Error(`database error : ${error}`);
     }
   }
 

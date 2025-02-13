@@ -48,7 +48,7 @@ export class UsersService {
   async addUserActivity (
     activity: string,
     actionBy: bigint,
-    additionalData?: Record<string, any>
+    additionalData?: Record<string, unknown> // changes from any to unknown
   ): Promise<boolean> {
     return this.userActivityDao.addUserActivity(
       activity,

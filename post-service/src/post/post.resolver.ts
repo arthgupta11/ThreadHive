@@ -31,7 +31,7 @@ export class PostsResolver {
     @Args('input') input: CreatePostInput,
     @Context() context: AuthGaurdContextDto
   ): Promise<string> {
-   
+
     if (
       context.channelsAllowed.includes(input.channelId) &&
       context.userId.toString() === input.createdBy.toString()
