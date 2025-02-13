@@ -16,9 +16,11 @@ export class RepliesResolver {
   @Query(() => {
     return [ReplyResponseDto];
   })
+  @UseGuards(AuthGuard)
   async getReplies (
     @Context() context: AuthGaurdContextDto
   ): Promise<ReplyResponseDto[]> {
+   
     return this.repliesService.getReplies(context);
   }
 

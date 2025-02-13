@@ -75,7 +75,7 @@ export class UserDao {
 
   async getUsersDao (context: AuthGaurdContextDto): Promise<UserResponseDto[]> {
     try {
-      const response = (await db.select().from(users)) as UserResponseDto[];
+      const response = (await db.query.users.findMany()) as UserResponseDto[];
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         context.userId,
@@ -83,8 +83,8 @@ export class UserDao {
       );
       return response;
     } catch (error) {
-      console.log('error-->', error);
-      throw new Error('Database error !');
+      
+      throw new Error(`Database error -> ${error}`);
     }
   }
 

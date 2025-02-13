@@ -61,7 +61,6 @@ export class AuthGuard implements CanActivate {
           return channelId;
         });
       };
-
       // write logic to extract list of channels he have accessed to admin
       if (role === 'ADMIN') {
         const channelsAccess = await db

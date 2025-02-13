@@ -15,8 +15,8 @@ import { UpdateUserChannelInput } from './dtos/updateUserChannelInput.dto';
 
 @Injectable()
 export class UserChannelDao {
-  constructor (private readonly userActivityDao: UserActivityDao) {}
-  async createUserChannelMapppingDao (
+  constructor(private readonly userActivityDao: UserActivityDao) {}
+  async createUserChannelMapppingDao(
     input: CreateUserChannelInput,
     context: AuthGaurdContextDto
   ): Promise<string> {
@@ -41,18 +41,16 @@ export class UserChannelDao {
 
       // Return the first inserted user
     } catch (error) {
-
       throw new Error(`Database error - ${error}`);
     }
   }
 
-  async getUsersChannelDao (
+  async getUsersChannelDao(
     context: AuthGaurdContextDto
   ): Promise<UserChannelResponseDto[]> {
     try {
-      const response = (await db
-        .select()
-        .from(usersChannelMapping)) as UserChannelResponseDto[];
+      const response =
+        (await db.query.usersChannelMapping.findMany()) as UserChannelResponseDto[];
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         context.userId,
@@ -60,12 +58,11 @@ export class UserChannelDao {
       );
       return response;
     } catch (error) {
-
       throw new Error(`Database error -> ${error} `);
     }
   }
 
-  async deleteUserChannelDao (
+  async deleteUserChannelDao(
     input: DeleteUserChannelInput,
     context: AuthGaurdContextDto
   ): Promise<string> {
@@ -89,7 +86,7 @@ export class UserChannelDao {
     }
   }
 
-  async updateUserChannel (
+  async updateUserChannel(
     input: UpdateUserChannelInput,
     context: AuthGaurdContextDto
   ): Promise<string> {

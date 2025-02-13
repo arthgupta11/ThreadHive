@@ -14,7 +14,7 @@ export class PostDao {
     input: typeof posts.$inferInsert,
     context: AuthGaurdContextDto
   ) {
-    console.log('in create block');
+
     try {
       const newpost = await db.insert(posts).values(input); // .returning() returns inserted row(s)
       if (newpost[0].affectedRows !== 0) {
@@ -43,6 +43,7 @@ export class PostDao {
   async getPostsDao (context: AuthGaurdContextDto): Promise<PostResponseDto[]> {
     try {
       const response = await db.select().from(posts);
+
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         context.userId,

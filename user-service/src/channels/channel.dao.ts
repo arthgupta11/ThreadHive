@@ -50,9 +50,7 @@ export class ChannelDao {
     context: AuthGaurdContextDto
   ): Promise<ChannelResponseDto[]> {
     try {
-      const response = (await db
-        .select()
-        .from(channels)) as ChannelResponseDto[];
+      const response = (await db.query.channels.findMany()) as ChannelResponseDto[];
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         context.userId,

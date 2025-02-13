@@ -45,11 +45,12 @@ export class ReplyDao {
     context: AuthGaurdContextDto
   ): Promise<ReplyResponseDto[]> {
     try {
-      const response = (await db.select().from(replies)) as ReplyResponseDto[];
+      const response = (await db.query.replies.findMany()) as ReplyResponseDto[];
+      
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         context.userId,
-        { request: 'success' }
+        { 'request': 'success' }
       );
       return response;
     } catch (error) {

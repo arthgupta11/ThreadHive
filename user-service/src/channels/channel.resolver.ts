@@ -16,9 +16,11 @@ export class ChannelsResolver {
   @Query(() => {
     return [ChannelResponseDto];
   })
+  @UseGuards(AuthGuard)
   async getChannels (
-    context: AuthGaurdContextDto
+    @Context() context: AuthGaurdContextDto
   ): Promise<ChannelResponseDto[]> {
+    
     return this.channelsService.getChannel(context);
   }
 
