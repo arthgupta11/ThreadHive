@@ -11,13 +11,13 @@ import { UpdateCommentInput } from './dtos/updateComment.dto';
 
 @Resolver()
 export class CommentsResolver {
-  constructor (private readonly commentsService: CommentsService) {}
+  constructor(private readonly commentsService: CommentsService) {}
 
   @Query(() => {
     return [CommentResponseDto];
   })
   @UseGuards(AuthGuard)
-  async getComments (
+  async getComments(
     @Context() context: AuthGaurdContextDto
   ): Promise<CommentResponseDto[]> {
     return this.commentsService.getComments(context);
@@ -27,15 +27,16 @@ export class CommentsResolver {
     return String;
   })
   @UseGuards(AuthGuard)
-  async createComment (
+  async createComment(
     @Args('input') input: CreateCommentInput,
     @Context() context: AuthGaurdContextDto
   ): Promise<string> {
     if (
-      context.channelsAllowed.includes(input.channelId) &&
-      context.userId.toString() === input.createdBy.toString()
+      context.role === 'SUPERADMIN' ||
+      (context.channelsAllowed.includes(input.channelId) &&
+        context.userId.toString() === input.createdBy.toString())
     ) {
-      return this.commentsService.createComment(input,context);
+      return this.commentsService.createComment(input, context);
     }
     throw new UnauthorizedException(
       `you dont have access to this channel -> ${input.channelId}`
@@ -45,7 +46,7 @@ export class CommentsResolver {
   @Mutation(() => {
     return String;
   })
-  async deleteComment (
+  async deleteComment(
     @Args('input') input: DeleteCommentInput,
     @Context() context: AuthGaurdContextDto
   ): Promise<string> {
@@ -61,10 +62,12 @@ export class CommentsResolver {
   @Mutation(() => {
     return String;
   })
-  async updateComment (
+  @UseGuards(AuthGuard)
+  async updateComment(
     @Args('input') input: UpdateCommentInput,
     @Context() context: AuthGaurdContextDto
   ): Promise<string> {
+
     return this.commentsService.updateComment(
       input,
       context.channelsAllowed,

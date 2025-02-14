@@ -9,13 +9,12 @@ import { UpdateReplyInput } from './dtos/updateReply.dto';
 
 @Injectable()
 export class ReplyDao {
-  constructor (private readonly userActivityDao: UserActivityDao) {} // Inject `UserDao`
+  constructor(private readonly userActivityDao: UserActivityDao) {} // Inject `UserDao`
 
-  async createReplyDao (
+  async createReplyDao(
     input: typeof replies.$inferInsert,
     context: AuthGaurdContextDto
   ) {
-
     try {
       const newReply = await db.insert(replies).values(input); // .returning() returns inserted row(s)
       if (newReply[0].affectedRows !== 0) {
@@ -24,7 +23,7 @@ export class ReplyDao {
           context.userId,
           {
             ...input,
-            commentId : input.channelId.toString(),
+            commentId: input.channelId.toString(),
             createdBy: input.createdBy.toString(),
             modifiedBy: input.modifiedBy.toString(),
             channelId: input.channelId.toString(),
@@ -41,16 +40,17 @@ export class ReplyDao {
     }
   }
 
-  async getRepliesDao (
+  async getRepliesDao(
     context: AuthGaurdContextDto
   ): Promise<ReplyResponseDto[]> {
     try {
-      const response = (await db.query.replies.findMany()) as ReplyResponseDto[];
-      
+      const response =
+        (await db.query.replies.findMany()) as ReplyResponseDto[];
+
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         context.userId,
-        { 'request': 'success' }
+        { request: 'success' }
       );
       return response;
     } catch (error) {
@@ -58,7 +58,7 @@ export class ReplyDao {
     }
   }
 
-  async deleteReplyDao (
+  async deleteReplyDao(
     input: DeleteReplyInput,
     context: AuthGaurdContextDto
   ): Promise<string> {
@@ -80,7 +80,7 @@ export class ReplyDao {
     }
   }
 
-  async updateReply (
+  async updateReply(
     input: UpdateReplyInput,
     context: AuthGaurdContextDto
   ): Promise<string> {
@@ -118,7 +118,14 @@ export class ReplyDao {
         await this.userActivityDao.addUserActivity(
           context.activityDone,
           context.userId,
-          { ...input, id: id.toString() }
+          {
+            ...input,
+            id: id.toString(),
+            modifiedBy: modifiedBy.toString(),
+            channelId: channelId.toString(),
+            commentId: input.commentId.toString(),
+            postId: postId.toString(),
+          }
         );
         return `Reply of id  ${input.id} updated successfully`;
       }
@@ -128,7 +135,7 @@ export class ReplyDao {
     }
   }
 
-  async canUserProceed (
+  async canUserProceed(
     entityId: bigint,
     channelsAllowed: bigint[],
     userId: bigint,
@@ -137,15 +144,16 @@ export class ReplyDao {
     if (role === 'SUPERADMIN') {
       return true;
     }
-    const record = await db.query.posts.findFirst({
-      where: (posts, { eq }) => {
-        return eq(posts.id, entityId);
+    const record = await db.query.replies.findFirst({
+      where: (replies, { eq }) => {
+        return eq(replies.id, entityId);
       },
     });
     if (record) {
       if (role === 'ADMIN') {
         return channelsAllowed.includes(record.channelId);
       }
+
       return record.createdBy.toString() === userId.toString();
     }
     return false;

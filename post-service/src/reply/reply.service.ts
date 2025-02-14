@@ -56,6 +56,7 @@ export class RepliesService {
     role: string,
     context: AuthGaurdContextDto
   ): Promise<string> {
+    
     if (
       await this.replyDao.canUserProceed(
         input.id,
@@ -66,6 +67,6 @@ export class RepliesService {
     ) {
       return this.replyDao.updateReply(input, context);
     }
-    throw new UnauthorizedException('User not allowed to delete this post');
+    throw new UnauthorizedException('User not allowed to update this post');
   }
 }

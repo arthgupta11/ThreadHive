@@ -123,6 +123,7 @@ export class CommentDao {
     userId: bigint,
     role: string
   ): Promise<boolean> {
+    console.log(role)
     if (role === 'SUPERADMIN') {
       return true;
     }

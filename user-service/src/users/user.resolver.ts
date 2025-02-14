@@ -55,7 +55,7 @@ export class UsersResolver {
     @Context() context: AuthGaurdContextDto
   ): Promise<UserResponseDto[]> {
     // console.log("resolver access",cont)
-    if (email === context.email) {
+    if (email === context.email || context.role === 'SUPERADMIN') {
       return this.usersService.findUserByEmail(email, context);
     }
     throw new UnauthorizedException(

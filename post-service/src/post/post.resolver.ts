@@ -33,8 +33,9 @@ export class PostsResolver {
   ): Promise<string> {
 
     if (
-      context.channelsAllowed.includes(input.channelId) &&
-      context.userId.toString() === input.createdBy.toString()
+      (context.role === 'SUPERADMIN') ||
+      (context.channelsAllowed.includes(input.channelId) &&
+      context.userId.toString() === input.createdBy.toString() )
     ) {
       return this.postsService.createPost(input, context);
     }
