@@ -6,7 +6,7 @@ import {
 import 'dotenv/config';
 import fastifyRateLimit from '@fastify/rate-limit';
 import { AppModule } from './app.module';
-
+import helmet from '@fastify/helmet';
 async function bootstrap () {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -17,6 +17,11 @@ async function bootstrap () {
     credentials: true, // Allow cookies if using authentication
     allowedHeaders: 'Content-Type, Authorization',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  });
+
+   // Apply Helmet for security headers
+   await app.register(helmet, {
+    contentSecurityPolicy: false, // Disable CSP if needed for GraphQL playground
   });
 
   await app.register(fastifyRateLimit, {
