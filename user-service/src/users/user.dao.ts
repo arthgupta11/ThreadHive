@@ -18,7 +18,7 @@ import { UpdateUserInput } from './dtos/updateInput.dto';
 export class UserDao {
   constructor (private readonly userActivityDao: UserActivityDao) {}
   async createUserDao (input: CreateUserInput, context: AuthGaurdContextDto) {
-    console.log('in create block');
+  
     try {
       const hashedPassword = await bcrypt.hash(input.password, 10);
 
