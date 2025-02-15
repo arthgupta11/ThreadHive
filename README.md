@@ -158,7 +158,24 @@ docker-compose up --build
 
 ---
 
+
 ## **Testing**  
+
+ThreadHive uses **Jest** for unit and integration testing to ensure high reliability and maintainability.  
+
+**Jest testing has been implemented for Channels, Users, Replies, and UserChannel using different methods:**
+
+Jest Testing with NestJS
+Jest Testing without NestJS
+Jest Testing for DAO
+Jest Testing for Resolvers
+
+### **Unit Testing**  
+Unit tests are written using **Jest and @nestjs/testing** to test individual services, DAOs, and resolvers.  
+```bash
+# Run unit tests
+yarn test
+
 
 ```bash
 # Run unit tests
