@@ -24,6 +24,7 @@ export class ChannelDao {
     console.log('in create block');
     try {
       const dataObject = {
+        ...(input?.id && { id: input.id }),
         name: input.name,
         createdAt: new Date(),
         isDeleted: false,

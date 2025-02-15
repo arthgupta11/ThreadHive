@@ -64,7 +64,7 @@ export class UserDao {
       await this.userActivityDao.addUserActivity(
         context.activityDone,
         context.userId,
-        user[0]
+        {'id':user[0].id.toString()}
       );
       return user as UserResponseDto[];
     } catch (error) {

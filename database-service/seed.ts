@@ -1,3 +1,4 @@
+//****** incorrect seeding script not in use users password requires hashing cant be seeded*****
 import { drizzle } from "drizzle-orm/mysql2";
 import { seed } from "drizzle-seed";
 import * as schema from "./src/db/schema";

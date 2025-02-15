@@ -21,10 +21,11 @@ export class UserChannelDao {
     context: AuthGaurdContextDto
   ): Promise<string> {
     try {
-      const dataObject = {
-        userId: input.userId,
-        channelId: input.channelId,
-      };
+        const dataObject = {
+          ...(input?.id && { id: input.id }), // Only include id if it exists
+          userId: input.userId,
+          channelId: input.channelId,
+        };
       const newUser = await db.insert(usersChannelMapping).values(dataObject); // .returning() returns inserted row(s)
       if (newUser[0].affectedRows !== 0) {
         await this.userActivityDao.addUserActivity(
@@ -78,7 +79,7 @@ export class UserChannelDao {
           context.userId,
           { id: id.toString() }
         );
-        return `user mapping with if ${id} deleted successfully`;
+        return `user mapping with id ${id} deleted successfully`;
       }
       throw new Error(`user id not found -> ${id}`);
     } catch (error) {
