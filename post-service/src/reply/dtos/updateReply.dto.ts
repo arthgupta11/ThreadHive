@@ -24,8 +24,8 @@ export class UpdateReplyInput {
   @Field(() => BigIntScalar)
   channelId!: bigint;
 
-  @Field(() => BigIntScalar)
-  commentId!: bigint;
+  @Field(() => BigIntScalar, {nullable : false})
+  commentId?: bigint;
 
   @Field(() => BigIntScalar)
   postId!: bigint;

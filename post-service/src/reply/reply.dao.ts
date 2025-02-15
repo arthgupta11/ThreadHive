@@ -72,7 +72,7 @@ export class ReplyDao {
           context.userId,
           { id: id.toString() }
         );
-        return `Reply with if ${id} deleted successfully`;
+        return `Reply with id ${id} deleted successfully`;
       }
       throw new Error(`Reply id not found -> ${id}`);
     } catch (error) {
@@ -123,7 +123,7 @@ export class ReplyDao {
             id: id.toString(),
             modifiedBy: modifiedBy.toString(),
             channelId: channelId.toString(),
-            commentId: input.commentId.toString(),
+            commentId: input.commentId?.toString(),
             postId: postId.toString(),
           }
         );

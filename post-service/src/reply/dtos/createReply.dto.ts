@@ -9,6 +9,10 @@ import {
 
 @InputType()
 export class CreateReplyInput {
+
+  @Field(() => BigIntScalar,{nullable: true})
+  id?: bigint;
+
   @Field()
   @IsNotEmpty()
   @IsString()

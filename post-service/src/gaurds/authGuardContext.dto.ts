@@ -32,7 +32,7 @@ export class AuthGaurdContextDto {
     },
     { nullable: true }
   )
-  channelsAllowed!: bigint[];
+  channelsAllowed?: bigint[];
 }
 
 @ObjectType()
